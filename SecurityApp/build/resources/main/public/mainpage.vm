@@ -1,0 +1,318 @@
+#set( $title = "Welcome Page" )
+#parse("public/top.vm")
+
+<head>
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-pie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+    <script src="papaparse.min.js"></script>
+    <script type="module" src="https://unpkg.com/@googlemaps/markerclusterer/dist/index.min.js"></script>
+    <script src="jquery-csv.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="../css/custom.css"/>
+
+    <script src="../js/index.js"></script>
+
+    <title>Simple Map</title>
+    <style>
+        /* Button used to open the contact form - fixed at the bottom of the page */
+    		.open-button {
+    		background-color: rgb(248, 10, 10);
+    		color: rgb(8, 8, 8);
+    		/*padding: 16px 20px;*/
+    		/*border: none;*/
+    		/*cursor: pointer;*/
+    		/*opacity: 0.8;*/
+    		/*position: fixed;*/
+    		/*bottom: 23px;*/
+    		/*right: 28px;*/
+    		/*width: 280px;*/
+    		}
+
+    		/* The popup form - hidden by default */
+    		.form-popup {
+    		 display: none;
+    		position: fixed;
+    		bottom: 0;
+    		top: 15px;
+    		right: 15px;
+    		border: 3px solid #f1f1f1;
+    		z-index: 9;
+             overflow-y:scroll;
+    		}
+
+    		/* Add styles to the form container */
+    		.form-container {
+    		max-width: 600px;
+    		padding: 10px;
+    		background-color: white;
+
+    		}
+    		table, th, td {
+              border: 1px solid black;
+              border-collapse: collapse;
+              padding: 10px;
+            }
+
+    		/* Full-width input fields */
+    		.form-container input[type=text], .form-container input[type=password] {
+    		width: 100%;
+    		padding: 15px;
+    		margin: 5px 0 22px 0;
+    		border: none;
+    		background: #f1f1f1;
+    		}
+
+    		/* When the inputs get focus, do something */
+    		.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+    		background-color: #ddd;
+    		outline: none;
+    		}
+
+    		/* Set a style for the submit/login button */
+    		.form-container .btn {
+    		background-color: #04AA6D;
+    		color: white;
+    		padding: 16px 20px;
+    		border: none;
+    		cursor: pointer;
+    		width: 100%;
+    		margin-bottom:10px;
+    		opacity: 0.8;
+    		}
+
+    		/* Add a red background color to the cancel button */
+    		.form-container .cancel {
+    		background-color: red;
+    		}
+
+    		/* Add some hover effects to buttons */
+    		.form-container .btn:hover, .open-button:hover {
+    		opacity: 1;
+    		}
+      </style>
+  </head>
+
+
+
+#parse("public/navigation.vm")
+
+    <body>
+    <a><h3 style="text-align: center">You can report your incident using the Report button below, once submitted
+    you can see your incident marked on the map<h3></a>
+    <div class="row">
+    <button type="button" class="btn btn-danger btn-lg" style=" position: relative; margin: 0 auto;  align-self: center; justify-content: center;" onclick="openForm()">REPORT INCIDENT</button>
+    </div>
+    </body>
+
+    <body onload="initMap()">
+    <div class="row" style= "margin: auto;">
+     <div id="map" style="margin:auto;  width: 800px; height: 600px;"></div>
+     <div style="margin:auto;">
+     <table>
+       <tr>
+           <th>Color</th>
+           <th>Crime</th>
+       </tr>
+       <tr>
+           <td><img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"></td>
+           <td>Murder</td>
+       </tr>
+        <tr>
+            <td><img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png"></td>
+            <td>Rape</td>
+       </tr>
+       <tr>
+            <td><img src="http://maps.google.com/mapfiles/ms/icons/pink-dot.png"></td>
+            <td>Robbery</td>
+       </tr>
+        <tr>
+            <td><img src="http://maps.google.com/mapfiles/ms/icons/purple-dot.png"></td>
+            <td>Assault</td>
+       </tr>
+        <tr>
+            <td><img src="http://maps.google.com/mapfiles/ms/icons/orange-dot.png"></td>
+            <td>Burglary</td>
+       </tr>
+        <tr>
+            <td><img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png"></td>
+            <td>Larceny</td>
+       </tr>
+       <tr>
+            <td><img src="http://maps.google.com/mapfiles/kml/paddle/wht-circle.png"></td>
+            <td>Auto Theft</td>
+       </tr>
+       <tr>
+            <td><img src="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"></td>
+            <td>Arson</td>
+       </tr>
+       <tr>
+            <td><img src="http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png"></td>
+            <td>Shooting</td>
+       </tr>
+     </table>
+     </div>
+</div>
+    </body>
+
+    <title>Top 10 Crime by Type</title>
+
+    <div id="container" style="width: 100%; height: 100%"></div>
+
+##    <script>
+##        // const anychart = require("./js/d3.min.js");
+##        anychart.onDocumentReady(function() {
+##            var data = [
+##                {x: "LARCENY", value: 77073},
+##                {x: "COMMON ASSAULT", value: 60450},
+##                {x: "BURGLARY", value: 48387},
+##                {x: "LARCENY FROM AUTO", value: 45203},
+##                {x: "AGG. ASSAULT", value: 40566},
+##                {x: "AUTO THEFT", value: 30788},
+##                {x: "ROBBERY - STREET", value: 23734},
+##                {x: "ROBBERY - COMMERCIAL", value: 6158},
+##                {x: "SHOOTING", value: 4680},
+##                {x: "ROBBERY - RESIDENCE", value: 3757}
+##            ];
+##
+##
+##            // create the chart
+##            var chart = anychart.pie();
+##
+##            // set the chart title
+##            chart.title("Crime Visualization by Type");
+##
+##            // add the data
+##            chart.data(data);
+##
+##            // display the chart in the container
+##            chart.container('container');
+##            chart.draw();
+##        });
+##    </script>
+
+
+<section class="section pb-5">
+
+
+  <div class="row">
+      <div>
+          <button type="button" class="btn btn-dark btn-lg" style=" position: relative; margin: 0 auto;  align-items: center; justify-content: center;" onclick="addMarkers()">ADD Data</button>
+
+
+      </div>
+    <!--Grid column-->
+    <div class="col-lg-5 mb-4">
+    </div>
+
+    <div class="form-popup" id="myForm" >
+      <form  class="form-container" onsubmit="codeAddress(); return false;">
+        <h2>REPORT</h2>
+        <div class="row">
+          <div class="col">
+            <label for="inputName">First Name</label>
+
+            <input type="text" id = "firstName" name="fname" class="form-control" placeholder="First name" required>
+          </div>
+          <div class="col">
+            <label for="inputName">Last Name</label>
+
+            <input type="text" id = "lastName" name="lname"  class="form-control" placeholder="Last name" required>
+          </div>
+        </div>
+
+        <label for="Date"><b>Date:</b></label>
+        <input type="date" id = "date"  name="date" min="2010-01-02" max="2022-01-01" required>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">Email</label>
+            <input type="email" class="form-control" name="email" id="inputEmail4" placeholder="Email" required>
+          </div>
+
+        </div>
+        <div class="form-group">
+          <label for="inputAddress">Address</label>
+          <input type="text" id = "address" name="address" class="form-control" placeholder="1234 Main St" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="inputCity">City</label>
+            <input type="text" id = "city" name="city" class="form-control" id="inputCity" required>
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputState">State</label>
+            <select id="inputState" class="form-control">
+              <option selected>Choose...</option>
+              <option value="Maryland">Maryland</option>
+            </select>
+          </div>
+          <div class="form-group col-md-2">
+            <label for="inputZip">Zip</label>
+            <input type="text" id = "zip" name="zip" class="form-control" id="inputZip" required>
+          </div>
+        </div>
+        <textarea id="description" rows="4" cols="36" name="describe" form="myForm" placeholder="Describe the incident here" required></textarea>
+         <input type="submit" id="addButton2" class="btn btn-primary" ></input>
+
+          <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+      </form>
+    </div>
+
+
+
+
+
+    <!--Grid column-->
+<div>
+
+</div>
+
+  </div>
+        <div class="row text-center">
+        <div class="col-md-4">
+          <a class="btn-floating blue accent-1"><ion-icon size = large name="location"></ion-icon></a>
+          <p> Batimore, MD 21218</p>
+          <p>United States</p>
+        </div>
+
+        <div class="col-md-4">
+          <a class="btn-floating blue accent-1"><ion-icon size = large  name="call"></ion-icon></a>
+          <p>+ 01 234 567 89</p>
+          <p>Mon - Fri, 8:00-22:00</p>
+        </div>
+
+        <div class="col-md-4">
+          <a class="btn-floating blue accent-1"><ion-icon size = large name="mail"></ion-icon></a>
+          <p>id@jhu.edu</p>
+          <p>id@jhu.edu</p>
+        </div>
+
+      </div>
+
+
+</section>
+
+
+  <body>
+
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKPjr40zhYagqXTfKxI1sBC8hnNajRo98&callback=initMap&v=weekly"
+      async
+    ></script>
+  </body>
+</HTML>
+

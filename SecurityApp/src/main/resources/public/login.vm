@@ -75,15 +75,7 @@
       }
     </style>
 
-    <meta charset="utf-8">
-  <meta name="description" content="Game Warrior Template">
-  <meta name="keywords" content="warrior, game, creative, html">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Favicon -->
-<!--   <link href="img/favicon.ico" rel="shortcut icon"/>
- -->
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
+
 
   <!-- Stylesheets -->
   <link rel="stylesheet" media="only screen and (min-width: 481px) and (max-width: 960px)" href="../css/tablet.css">
@@ -102,6 +94,11 @@
     <link rel="stylesheet" href="../css/owl.carousel.css"/>
     <link rel="stylesheet" href="../css/custom.css"/>
     <link rel="stylesheet" href="../css/animate.css"/>
+
+        <meta name="google-signin-scope" content="profile email">
+        <meta name="google-signin-client_id" content="649384552528-c9ej84f58ijleb0o16rrpnqcsrns3c7u.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+
     <header class="header-section">
         <div class="container">
           <!-- logo -->
@@ -148,15 +145,55 @@
        </form>
      </a>
 
-     <div class="col s12 m6 offset-m3 center-align">
-         <a class="oauth-container btn darken-4 white black-text" href="https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=http://localhost:7000&scope=https://www.googleapis.com/auth/userinfo.profile&response_type=code&client_id=649384552528-c9ej84f58ijleb0o16rrpnqcsrns3c7u.apps.googleusercontent.com" style="text-transform:none">
-             <div class="left">
-                 <img width="20px" style="margin-top:7px; margin-right:8px" alt="Google sign-in"
-                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
-             </div>
-             Login with Google
-         </a>
-     </div>
+<center>
+     <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+</center>
+
+     <br>
+         <script>
+           function onSignIn(googleUser) {
+             // Useful data for your client-side scripts:
+             var profile = googleUser.getBasicProfile();
+             console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+             console.log('Full Name: ' + profile.getName());
+             console.log('Given Name: ' + profile.getGivenName());
+             console.log('Family Name: ' + profile.getFamilyName());
+             console.log("Image URL: " + profile.getImageUrl());
+             console.log("Email: " + profile.getEmail());
+
+               var myUserEntity = {};
+               myUserEntity.Id = profile.getId();
+               myUserEntity.Name = profile.getName();
+
+               //Store the entity object in sessionStorage where it will be accessible from all pages of your site.
+               sessionStorage.setItem('myUserEntity',JSON.stringify(myUserEntity));
+
+
+             window.location.href = "http://localhost:7000";
+
+
+           }
+
+           function checkIfLoggedIn()
+           {
+             if(sessionStorage.getItem('myUserEntity') == null){
+               //Redirect to login page, no user entity available in sessionStorage
+               window.location.href='http://localhost:7000/login';
+             } else {
+               //User already logged in
+               var userEntity = {};
+               userEntity = JSON.parse(sessionStorage.getItem('myUserEntity'));
+               window.location.href = "http://localhost:7000";
+
+             }
+           }
+
+           function logout()
+           {
+             //Don't forget to clear sessionStorage when user logs out
+             sessionStorage.clear();
+           }
+         </script>
 
 
 

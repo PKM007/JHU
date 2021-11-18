@@ -5,6 +5,7 @@
 
   <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,500,500i,700,700i" rel="stylesheet">
 
+    <meta name="google-signin-client_id" content="649384552528-c9ej84f58ijleb0o16rrpnqcsrns3c7u.apps.googleusercontent.com">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://cdn.anychart.com/releases/8.0.1/js/anychart-core.min.js"></script>
@@ -103,13 +104,50 @@
     		opacity: 1;
     		}
       </style>
+
+      <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+
+      <script>
+
+      function checkSession() {
+      console.log("its here !!!!!!!!!!!!!!!!!");
+      if(sessionStorage.getItem('myUserEntity') == null){
+      document.getElementById("loginButton").style.display = 'block';
+      document.getElementById("registerButton").style.display = 'block';
+      document.getElementById("logoutButton").style.display = 'none';
+      }else {
+        document.getElementById("loginButton").style.display = 'none';
+        document.getElementById("registerButton").style.display = 'none';
+        document.getElementById("logoutButton").style.display = 'block';
+      }
+
+              }
+
+
+      function logoutUser() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      console.log(auth2);
+          auth2.signOut().then(function () {
+            sessionStorage.clear();
+            console.log('User signed out.');
+            window.location.href='http://localhost:7000/login';
+          });
+      }
+
+      function onLoad() {
+            gapi.load('auth2', function() {
+              gapi.auth2.init();
+            });
+          }
+      </script>
+
   </head>
 
 
 
 #parse("public/navigation.vm")
 
-    <body>
+    <body onload="checkSession();">
     <a><h3 style="text-align: center">You can report your incident using the Report button below, once submitted
     you can see your incident marked on the map<h3></a>
     <div class="row">
@@ -313,6 +351,7 @@
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKPjr40zhYagqXTfKxI1sBC8hnNajRo98&callback=initMap&v=weekly"
       async
     ></script>
+
   </body>
 </HTML>
 

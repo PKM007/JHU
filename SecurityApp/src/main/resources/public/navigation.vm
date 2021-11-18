@@ -5,10 +5,13 @@
             <img src="../img/main-icon.ico" alt="" style="padding-right:10px" width="60vh" height ="60vh">
             <b>JHU Security APP</b>
         </a>
-        <div class="user-panel">
+        <div class="user-panel" id="logoutButton">
+            <a href="#" onClick="logoutUser()">Logout</a>
+         </div>
+        <div class="user-panel" id="loginButton">
             <a href="/login">Login</a>
         </div>
-        <div class="user-panel">
+        <div class="user-panel" id="registerButton">
             <a href="/signup">Register</a>
         </div>
         <!-- responsive -->
@@ -27,3 +30,4 @@
         </nav>
     </div>
 </header>
+
